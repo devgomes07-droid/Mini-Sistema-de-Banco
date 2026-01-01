@@ -57,8 +57,10 @@ public class Main {
                     break;
 
                 case 4:
-                    System.out.println("Histórico:");
-                    System.out.println(conta.getHistorico());
+                    System.out.println(" === EXTRATO === ");
+                    for (String registro : conta.getHistorico()) {
+                        System.out.println(registro);
+                }
                     break;
 
                 case 5:

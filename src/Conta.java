@@ -15,7 +15,7 @@ public class Conta {
             return false;
         }
         saldo += valor;
-        historico.add("Depósito: " + valor);
+        historico.add("[DEPÓSITO] Valor: " + valor);
         return true;
     }
 
@@ -24,7 +24,7 @@ public class Conta {
             return false;
         }
         saldo -= valor;
-        historico.add("Saque: " + valor);
+        historico.add("[Saque] Valor: " + valor);
         return true;
     }
 
