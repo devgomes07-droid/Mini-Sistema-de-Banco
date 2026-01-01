@@ -9,6 +9,7 @@ public class Conta {
         saldo = 0;
         historico = new ArrayList<>();
     }
+
     public boolean depositar(double valor) {
         if (valor <= 0) {
             return false;
@@ -17,6 +18,7 @@ public class Conta {
         historico.add("Depósito: " + valor);
         return true;
     }
+
     public boolean sacar(double valor) {
         if (valor <= 0 || valor > saldo) {
             return false;
@@ -25,9 +27,11 @@ public class Conta {
         historico.add("Saque: " + valor);
         return true;
     }
+
     public double getSaldo() {
         return saldo;
     }
+
     public ArrayList<String> getHistorico() {
         return new ArrayList<>(historico);
     }
