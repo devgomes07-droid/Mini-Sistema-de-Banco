@@ -20,12 +20,29 @@ public class Conta {
     }
 
     public boolean sacar(double valor) {
+        if (valor <= 0 || valor > saldo) {  // corrigido o || para lógica correta
+            return false;
+        }
+        saldo -= valor;
+        historico.add("[SAQUE] Valor: " + valor);
+        return true;
+    }
+
+    public boolean transferir(Conta destino, double valor) {  // corrigido o nome do método
         if (valor <= 0 || valor > saldo) {
             return false;
         }
         saldo -= valor;
-        historico.add("[Saque] Valor: " + valor);
+        destino.depositar(valor);
+        historico.add("[TRANSFERÊNCIA ENVIADA] Valor: " + valor);
+        destino.adicionarHistorico("[TRANSFERÊNCIA RECEBIDA] Valor: " + valor);
         return true;
+    }
+
+    // método auxiliar para adicionar histórico de forma segura
+
+    private void adicionarHistorico(String texto) {
+        historico.add(texto);
     }
 
     public double getSaldo() {

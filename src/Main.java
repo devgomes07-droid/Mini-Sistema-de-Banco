@@ -5,13 +5,15 @@ public class Main {
 
         Scanner sc = new Scanner(System.in);
         Conta conta = new Conta();
+        Conta contaDestino = new Conta();
 
         while (true) {
             System.out.println("\n1 - Depositar");
             System.out.println("2 - Sacar");
             System.out.println("3 - Ver Saldo");
             System.out.println("4 - Ver Histórico");
-            System.out.println("5 - Sair");
+            System.out.println("5 - Transferência");
+            System.out.println("6 - Sair");
             System.out.print("Escolha: ");
 
             if (!sc.hasNextInt()) {
@@ -21,6 +23,7 @@ public class Main {
             }
 
             int opcao = sc.nextInt();
+
             switch (opcao) {
                 case 1:
                     System.out.print("Valor do depósito: ");
@@ -57,13 +60,28 @@ public class Main {
                     break;
 
                 case 4:
-                    System.out.println(" === EXTRATO === ");
+                    System.out.println("=== EXTRATO ===");
                     for (String registro : conta.getHistorico()) {
                         System.out.println(registro);
-                }
+                    }
                     break;
 
                 case 5:
+                    System.out.print("Valor da transferência: ");
+                    if (sc.hasNextDouble()) {
+                        double valor = sc.nextDouble();
+                        if (conta.transferir(contaDestino, valor)) {
+                            System.out.println("Transferência realizada com sucesso!");
+                        } else {
+                            System.out.println("Transferência não realizada. Verifique o saldo.");
+                        }
+                    } else {
+                        System.out.println("Entrada inválida.");
+                        sc.next();
+                    }
+                    break;
+
+                case 6:
                     System.out.println("Saindo...");
                     sc.close();
                     return;
