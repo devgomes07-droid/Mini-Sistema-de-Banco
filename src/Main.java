@@ -1,27 +1,20 @@
+import model.Conta;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    static Scanner sc = new Scanner(System.in);
-    static ArrayList<Conta> contas = new ArrayList<>();
-    static Conta contaAtual = null;
+
+    private static final Scanner sc = new Scanner(System.in);
+    private static final ArrayList<Conta> contas = new ArrayList<>();
+    private static Conta contaAtual = null;
 
     public static void main(String[] args) {
         int opcao;
-        do {
-            System.out.println("\n===== BANCO =====");
-            System.out.println("1 - Criar conta");
-            System.out.println("2 - Selecionar conta");
-            System.out.println("3 - Depositar");
-            System.out.println("4 - Sacar");
-            System.out.println("5 - Ver saldo");
-            System.out.println("6 - Transferir");
-            System.out.println("7 - Ver histórico");
-            System.out.println("0 - Sair");
-            System.out.print("Opção: ");
 
-            opcao = sc.nextInt();
-            sc.nextLine(); // limpar buffer
+        do {
+            exibirMenu();
+            opcao = lerOpcao();
 
             switch (opcao) {
                 case 1 -> criarConta();
@@ -31,38 +24,67 @@ public class Main {
                 case 5 -> verSaldo();
                 case 6 -> transferir();
                 case 7 -> verHistorico();
-                case 0 -> System.out.println("Encerrando...");
-                default -> System.out.println("Opção inválida");
+                case 0 -> System.out.println("Sistema encerrado.");
+                default -> System.out.println("Opção inválida.");
             }
+
         } while (opcao != 0);
     }
-    // ===== FUNÇÕES =====
-    static void criarConta() {
+
+    // ================= MENU =================
+
+    private static void exibirMenu() {
+        System.out.println("\n===== BANCO =====");
+        System.out.println("Conta selecionada: " +
+                (contaAtual == null ? "Nenhuma" : contaAtual.getNomeCompleto()));
+        System.out.println("1 - Criar conta");
+        System.out.println("2 - Selecionar conta");
+        System.out.println("3 - Depositar");
+        System.out.println("4 - Sacar");
+        System.out.println("5 - Ver saldo");
+        System.out.println("6 - Transferir");
+        System.out.println("7 - Ver histórico");
+        System.out.println("0 - Sair");
+        System.out.print("Opção: ");
+    }
+    private static int lerOpcao() {
+        while (!sc.hasNextInt()) {
+            System.out.print("Digite um número válido: ");
+            sc.next();
+        }
+        int opcao = sc.nextInt();
+        sc.nextLine();
+        return opcao;
+    }
+
+    // ================= OPERAÇÕES =================
+
+    private static void criarConta() {
         System.out.print("Nome: ");
         String nome = sc.nextLine();
         System.out.print("Sobrenome: ");
         String sobrenome = sc.nextLine();
+
         if (!nome.matches("[a-zA-Z ]+") || !sobrenome.matches("[a-zA-Z ]+")) {
-            System.out.println("Nome inválido.");
+            System.out.println("Nome ou sobrenome inválido.");
             return;
         }
-        Conta nova = new Conta(nome, sobrenome);
-        contas.add(nova);
-        contaAtual = nova;
+
+        Conta novaConta = new Conta(nome, sobrenome);
+        contas.add(novaConta);
+        contaAtual = novaConta;
 
         System.out.println("Conta criada e selecionada.");
     }
-    static void selecionarConta() {
+    private static void selecionarConta() {
         if (contas.isEmpty()) {
             System.out.println("Nenhuma conta cadastrada.");
             return;
         }
-        for (int i = 0; i < contas.size(); i++) {
-            System.out.println(i + " - " + contas.get(i).getNomeCompleto());
-        }
-        System.out.print("Escolha: ");
-        int index = sc.nextInt();
-        sc.nextLine();
+        listarContas();
+        System.out.print("Escolha o índice: ");
+        int index = lerOpcao();
+
         if (index < 0 || index >= contas.size()) {
             System.out.println("Conta inválida.");
             return;
@@ -70,68 +92,77 @@ public class Main {
         contaAtual = contas.get(index);
         System.out.println("Conta selecionada.");
     }
-    static void depositar() {
-        if (contaAtual == null) {
-            System.out.println("Nenhuma conta selecionada.");
-            return;
-        }
-        System.out.print("Valor: ");
-        double valor = sc.nextDouble();
-        sc.nextLine();
-        if (contaAtual.depositar(valor))
-            System.out.println("Depósito realizado.");
-        else
-            System.out.println("Erro no depósito.");
-    }
-    static void sacar() {
-        if (contaAtual == null) {
-            System.out.println("Nenhuma conta selecionada.");
-            return;
-        }
-        System.out.print("Valor: ");
+    private static void depositar() {
+        if (!verificarContaSelecionada()) return;
+
+        System.out.print("Valor do depósito: ");
         double valor = sc.nextDouble();
         sc.nextLine();
 
-        if (contaAtual.sacar(valor))
-            System.out.println("Saque realizado.");
-        else
-            System.out.println("Erro no saque.");
+        if (contaAtual.depositar(valor)) {
+            System.out.println("Depósito realizado com sucesso.");
+        } else {
+            System.out.println("Erro ao realizar depósito.");
+        }
     }
-    static void verSaldo() {
-        if (contaAtual == null) {
-            System.out.println("Nenhuma conta selecionada.");
+    private static void sacar() {
+        if (!verificarContaSelecionada()) return;
+
+        System.out.print("Valor do saque: ");
+        double valor = sc.nextDouble();
+        sc.nextLine();
+
+        if (contaAtual.sacar(valor)) {
+            System.out.println("Saque realizado com sucesso.");
+        } else {
+            System.out.println("Erro ao realizar saque.");
+        }
+    }
+    private static void verSaldo() {
+        if (!verificarContaSelecionada()) return;
+
+        System.out.println("Saldo atual: R$ " + contaAtual.getSaldo());
+    }
+    private static void transferir() {
+        if (!verificarContaSelecionada()) return;
+
+        listarContas();
+        System.out.print("Conta destino: ");
+        int index = lerOpcao();
+
+        if (index < 0 || index >= contas.size() || contas.get(index) == contaAtual) {
+            System.out.println("Conta destino inválida.");
             return;
         }
-        System.out.println("Saldo: R$" + contaAtual.getSaldo());
+        System.out.print("Valor da transferência: ");
+        double valor = sc.nextDouble();
+        sc.nextLine();
+
+        if (contaAtual.transferir(contas.get(index), valor)) {
+            System.out.println("Transferência realizada com sucesso.");
+        } else {
+            System.out.println("Erro na transferência.");
+        }
     }
-    static void transferir() {
+    private static void verHistorico() {
+        if (!verificarContaSelecionada()) return;
+
+        System.out.println("Histórico da conta:");
+        contaAtual.exibirHistorico(); // método que você vai ter na Conta
+    }
+
+    // ================= HELPERS ================
+
+    private static boolean verificarContaSelecionada() {
         if (contaAtual == null) {
             System.out.println("Nenhuma conta selecionada.");
-            return;
+            return false;
         }
+        return true;
+    }
+    private static void listarContas() {
         for (int i = 0; i < contas.size(); i++) {
             System.out.println(i + " - " + contas.get(i).getNomeCompleto());
         }
-        System.out.print("Destino: ");
-        int index = sc.nextInt();
-        sc.nextLine();
-        if (index < 0 || index >= contas.size() || contas.get(index) == contaAtual) {
-            System.out.println("Conta inválida.");
-            return;
-        }
-        System.out.print("Valor: ");
-        double valor = sc.nextDouble();
-        sc.nextLine();
-        if (contaAtual.transferir(contas.get(index), valor))
-            System.out.println("Transferência realizada.");
-        else
-            System.out.println("Erro na transferência.");
-    }
-    static void verHistorico() {
-        if (contaAtual == null) {
-            System.out.println("Nenhuma conta selecionada.");
-            return;
-        }
-        contaAtual.mostrarHistorico();
     }
 }
