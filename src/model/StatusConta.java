@@ -1,4 +1,5 @@
 package model;
-
-public class StatusConta {
+public enum StatusConta {
+    ATIVA,
+    BLOQUEADA
 }

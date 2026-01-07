@@ -52,7 +52,6 @@ public class Usuario {
     public boolean validarSenha(String senhaDigitada) {
         return this.senha.equals(senhaDigitada);
     }
-
     // ===== toString =====
     @Override
     public String toString() {
