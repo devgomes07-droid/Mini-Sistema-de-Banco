@@ -1,38 +1,32 @@
 package model;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Agencia {
 
- //   === ATRIBUTOS ===
-
+    // === ATRIBUTOS ===
     private String numero;
     private String nome;
     private List<Conta> contas;
 
-//    === CONSTRUTOR ===
-
-    public  Agencia(String numero,String nome) {
+    // === CONSTRUTOR ===
+    public Agencia(String numero, String nome) {
         this.numero = numero;
         this.nome = nome;
         this.contas = new ArrayList<>();
     }
 
-//    === METODOS ===
-
-//adicionar uma conta à agência
+    // === MÉTODOS ===
 
     public void adicionarConta(Conta conta) {
         if (conta != null && !contas.contains(conta)) {
             contas.add(conta);
             System.out.println("Conta de " + conta.getNomeCompleto() + " adicionada à agência " + nome);
         } else {
-            System.out.println("Conta invalída ou já existente");
+            System.out.println("Conta inválida ou já existente");
         }
     }
-
-//Lista todas as contas da agência
-
     public void listarContas() {
         System.out.println("=== Contas da Agência " + nome + " ===");
         if (contas.isEmpty()) {
@@ -43,21 +37,20 @@ public class Agencia {
             System.out.println(c.getNomeCompleto() + " | Saldo: R$ " + c.getSaldo());
         }
     }
-//Busca uma conta pelo nome completo
-
     public Conta buscarConta(String nomeCompleto) {
         for (Conta c : contas) {
             if (c.getNomeCompleto().equalsIgnoreCase(nomeCompleto)) {
                 return c;
             }
         }
-        return null; //retorna null se não achar
+        return null;
     }
 
-//Getters básicos
-
-    public String getNumero() {return numero;}
-    public String getNome() { return nome;}
-    public List<Conta> getContas() { return new ArrayList<>();}
-
+    // === GETTERS ===
+    public String getNumero() { return numero; }
+    public String getNome() { return nome; }
+    public List<Conta> getContas() {
+        return new ArrayList<>(contas);
+    }
 }
+
